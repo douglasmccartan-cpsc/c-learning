@@ -2,6 +2,9 @@
 
 
 int main(void){  // variables have types such as the listed below
+
+    const float ratio = 21. / 5.0;
+
     char a = 'D'; // char is a single character or byte 
     char hello[] = "Hello World"; // char[] holds an array of characters or bytes
     int number = 42; // int holds an intager
@@ -9,7 +12,8 @@ int main(void){  // variables have types such as the listed below
     double long_decimal = 1.23456789; // double holds a floating point number up to 16 digits
 
     printf(
-        "%c,\n%s,\n%d,\n%f,\n%f,\n%.2f\n", // each format typer must be the same as its variable
+        "%f,\n%c,\n%s,\n%d,\n%f,\n%f,\n%.2f\n", // each format typer must be the same as its variable
+        ratio,
         a,
         hello,
         number,
