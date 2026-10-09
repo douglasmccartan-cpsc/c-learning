@@ -45,4 +45,6 @@ int main(void) {
 
     printf("size of ControlReg: %zu\n", sizeof(ControlReg));
 
+    return 0;
+
 }
