@@ -24,21 +24,29 @@ void reg_set(uint8_t *reg_ptr, uint8_t mask){
     *reg_ptr |= mask;
 }
 
-void    reg_clear(uint8_t *reg_ptr, uint8_t mask){
+void reg_clear(uint8_t *reg_ptr, uint8_t mask){
     *reg_ptr &= ~mask;
 }
 
-int     reg_is_set(uint8_t reg, uint8_t mask){
+int reg_is_set(uint8_t reg, uint8_t mask){
     return (reg & mask) != 0;
 }
-void    reg_write_field(uint8_t *reg, uint8_t mask, uint8_t pos, uint8_t value){
-     
+
+void reg_write_field(uint8_t *reg_ptr, uint8_t mask, uint8_t pos, uint8_t value){
+
+    uint8_t new_bits = (value << pos) & mask;
+
+    *reg_ptr &= ~mask;
+    *reg_ptr |= new_bits;
 }
-uint8_t reg_read_field(uint8_t reg, uint8_t mask, uint8_t pos) { /* your code */ }
+uint8_t reg_read_field(uint8_t reg, uint8_t mask, uint8_t pos) { 
+    return (reg & mask) >> pos;
+ }
 
 int main(void) {
     uint8_t reg = 0;
 
+    // set all registers
     reg_set(&reg, ENABLE_MSK);
     reg_set(&reg, SPEED_MSK);
     reg_set(&reg, INT_EN_MSK);
@@ -46,6 +54,31 @@ int main(void) {
     reg_set(&reg, READY_MSK);
     reg_set(&reg, RESERVED_MSK);
 
+    // check to see if registers have been set
+    printf("is enable set? %d\n", reg_is_set(reg, ENABLE_MSK));
+    printf("is speed set? %d\n",reg_is_set(reg, SPEED_MSK));
+    printf("is int_en set? %d\n",reg_is_set(reg, INT_EN_MSK));
+    printf("is error set? %d\n",reg_is_set(reg, ERROR_MSK));
+    printf("is ready set? %d\n",reg_is_set(reg, READY_MSK));
+    printf("is reserved set? %d\n",reg_is_set(reg, RESERVED_MSK));
+
+    printf("speed is: 0x%02X\n", reg_read_field(reg, SPEED_MSK, SPEED_POS));
+
+    reg_write_field(&reg, SPEED_MSK, SPEED_POS, 2);
+
+    printf("speed is: 0x%02X\n", reg_read_field(reg, SPEED_MSK, SPEED_POS));
+
+    printf("A 0x%02X\n", reg);
+
+    // clear registers
+    reg_clear(&reg, ENABLE_MSK);
+    reg_clear(&reg, SPEED_MSK);
+    reg_clear(&reg, INT_EN_MSK);
+    reg_clear(&reg, ERROR_MSK);
+    reg_clear(&reg, READY_MSK);
+    reg_clear(&reg, RESERVED_MSK);
+
+    // check registers have been cleared
     printf("is enable set? %d\n", reg_is_set(reg, ENABLE_MSK));
     printf("is speed set? %d\n",reg_is_set(reg, SPEED_MSK));
     printf("is int_en set? %d\n",reg_is_set(reg, INT_EN_MSK));
@@ -57,7 +90,20 @@ int main(void) {
 
     printf("A 0x%02X\n", reg);
 
-    // add the rest of the test steps below
+    reg = 0xFF;
+
+    reg_write_field(&reg, SPEED_MSK, SPEED_POS, 0);
+
+    printf("A 0x%02X\n", reg);
+
+    reg_write_field(&reg, SPEED_MSK, SPEED_POS, 1);
+
+    printf("A 0x%02X\n", reg);
+
+    reg_write_field(&reg, SPEED_MSK, SPEED_POS, 2);
+    reg_clear(&reg, READY_MSK);
+
+    printf("A 0x%02X\n", reg);
 
     return 0;
 }
